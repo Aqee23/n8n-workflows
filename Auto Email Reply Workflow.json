@@ -1,0 +1,157 @@
+{
+  "name": "Auto Email Reply Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2.1,
+      "position": [
+        -432,
+        -32
+      ],
+      "id": "66f0d7cf-a76b-4a5a-b761-f33b2e460e37",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "65ra1X24U9naLyUH",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3cca5b34-28a9-425e-a0ed-25850f280ff4",
+              "leftValue": "={{ \n  (\n    ($json.subject || '') + ' ' +\n    ($json.text || '') + ' ' +\n    ($json.textPlain || '') + ' ' +\n    ($json.html || '') + ' ' +\n    ($json.from?.text || '')\n  ).toLowerCase()\n}}",
+              "rightValue": "jobleads",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "164cbf6a-1428-44c6-8f69-9023fdbb8fda",
+              "leftValue": "={{    (     ($json.subject || '') + ' ' +     ($json.text || '') + ' ' +     ($json.textPlain || '') + ' ' +     ($json.html || '') + ' ' +     ($json.from?.text || '')   ).toLowerCase() }}",
+              "rightValue": "snapchat",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "2b0d0786-54d4-4969-8d0b-30bf48c75f7b",
+              "leftValue": "={{    (     ($json.subject || '') + ' ' +     ($json.text || '') + ' ' +     ($json.textPlain || '') + ' ' +     ($json.html || '') + ' ' +     ($json.from?.text || '')   ).toLowerCase() }}",
+              "rightValue": "jira",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "2b0be28c-798d-4d70-89a5-a294e05e14a5",
+              "leftValue": "={{    (     ($json.subject || '') + ' ' +     ($json.text || '') + ' ' +     ($json.textPlain || '') + ' ' +     ($json.html || '') + ' ' +     ($json.from?.text || '')   ).toLowerCase() }}",
+              "rightValue": "n8n",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "69678316-54bb-4202-b335-fe6cc1bc57a3",
+              "leftValue": "={{    (     ($json.subject || '') + ' ' +     ($json.text || '') + ' ' +     ($json.textPlain || '') + ' ' +     ($json.html || '') + ' ' +     ($json.from?.text || '')   ).toLowerCase() }}",
+              "rightValue": "pricing",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -224,
+        -32
+      ],
+      "id": "6dac53f3-08c7-42d5-ba5a-9debdf0d8718",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "fromEmail": "aqeelairfan865@gmail.com",
+        "toEmail": "={{ $json.from?.value?.[0]?.address || $json.from?.text || $json.from }}",
+        "subject": "=Re: {{ $json.subject || 'Your Inquiry' }}",
+        "emailFormat": "text",
+        "text": "Hello,\n\nThank you for contacting us.\n\nWe have received your message and our support team will review it shortly. One of our representatives will get back to you as soon as possible.\n\nFor urgent matters, please reply with URGENT in the subject line.\n\nBest regards,\nSupport Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -16,
+        -128
+      ],
+      "id": "cc8874ed-026e-43a4-bf9e-83c573126e48",
+      "name": "Send an Email",
+      "webhookId": "bc49754a-69e6-45d9-b3a0-b97d585372fb",
+      "credentials": {
+        "smtp": {
+          "id": "VNZX2t1SquW1R4cu",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "037702dc-07f1-44ce-8557-43af079a4440",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ba0e904fb13498d522f135088b37003a30e0a038b60872ba858266502044aafd"
+  },
+  "nodeGroups": [],
+  "id": "wp8gvDAnXWvDM9wR",
+  "tags": []
+}
