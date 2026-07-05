@@ -1,0 +1,44 @@
+# n8n Auto Email Reply Workflow
+
+This project contains an n8n automation workflow that automatically handles incoming emails and sends predefined replies based on selected keywords.
+
+## Workflow Overview
+
+The workflow starts with an IMAP Email Trigger that monitors an inbox for new incoming emails. When a new email arrives, the workflow checks the email subject and body using an IF node. If the email contains selected keywords, the workflow sends an automatic reply using the Send Email node.
+
+## Workflow Steps
+
+1. Email Trigger IMAP detects a new incoming email.
+2. IF node checks the email subject and body for keywords.
+3. If the condition is matched, Send Email node sends an automatic reply.
+4. If the condition is not matched, the workflow does nothing.
+
+## Keywords Used
+
+The workflow checks for these keywords:
+
+- jobleads
+- snapchat
+- google security alert
+- jira
+- n8n
+
+## Nodes Used
+
+- Email Trigger IMAP
+- IF Node
+- Send Email Node
+
+## Use Case
+
+This workflow is useful for basic customer support automation, email filtering, and automatic response handling. It helps reduce manual work by replying to relevant emails automatically.
+
+## Important Notes
+
+Credentials such as IMAP passwords, SMTP passwords, API keys, and tokens are not included in this repository for security reasons.
+
+After importing the workflow into n8n, credentials must be connected again manually.
+
+## File
+
+- `auto-email-reply-workflow.json`
