@@ -1,0 +1,159 @@
+{
+  "name": "AI Auto Email Reply Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "format": "resolved",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailReadImap",
+      "typeVersion": 2.1,
+      "position": [
+        -384,
+        0
+      ],
+      "id": "0d67335b-9da5-40b4-bd4c-bc7059377218",
+      "name": "Email Trigger (IMAP)",
+      "credentials": {
+        "imap": {
+          "id": "65ra1X24U9naLyUH",
+          "name": "IMAP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "role": "system",
+              "content": "=You are a professional customer support assistant.\n\nYour task is to write a natural email reply according to the customer's email.\n\nRules:\n- Reply based on the actual email content.\n- Do not use a fixed template.\n- Do not mention that you are AI.\n- Do not invent prices, policies, delivery dates, or guarantees.\n- If the customer asks something unclear, politely ask for clarification.\n- Keep the reply short, polite, and professional.\n- Return only the email body."
+            },
+            {
+              "content": "=Customer email:\n\nFrom:\n{{ $('Email Trigger (IMAP)').item.json.from?.value?.[0]?.address || $('Email Trigger (IMAP)').item.json.from?.text || $('Email Trigger (IMAP)').item.json.from }}\n\nSubject:\n{{ $('Email Trigger (IMAP)').item.json.subject || 'No subject' }}\n\nMessage:\n{{ $('Email Trigger (IMAP)').item.json.text || $('Email Trigger (IMAP)').item.json.html || 'No message body found' }}\n\nWrite a suitable reply to this email."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -160,
+        0
+      ],
+      "id": "ed245230-096b-47d3-a567-d72b2ee85401",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "rVbSLXiTGzqHKhtJ",
+          "name": "n8n free OpenAI API credits"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "aqeelairfan865@gmail.com",
+        "toEmail": "={{ $('Email Trigger (IMAP)').item.json.from?.value?.[0]?.address || $('Email Trigger (IMAP)').item.json.from?.text || $('Email Trigger (IMAP)').item.json.from }}",
+        "subject": "=Re: {{ $('Email Trigger (IMAP)').item.json.subject || 'Your Inquiry' }}",
+        "emailFormat": "text",
+        "text": "={{ $json.aiReply }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        384,
+        0
+      ],
+      "id": "b84847bd-3228-40d9-92d6-857ae900b0f2",
+      "name": "Send an Email",
+      "webhookId": "6865461c-5afc-4699-95a9-cd158e7684aa",
+      "credentials": {
+        "smtp": {
+          "id": "VNZX2t1SquW1R4cu",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "fe4013ff-ca04-49a0-bca3-0b647307316b",
+              "name": "aiReply",
+              "value": "={{   typeof $json.output === 'string' ? $json.output :   typeof $json.text === 'string' ? $json.text :   typeof $json.response === 'string' ? $json.response :   typeof $json.message?.content === 'string' ? $json.message.content :   typeof $json.choices?.[0]?.message?.content === 'string' ? $json.choices[0].message.content :   typeof $json.data?.[0]?.content?.[0]?.text === 'string' ? $json.data[0].content[0].text :   typeof $json.output?.content === 'string' ? $json.output.content :   typeof $json.output?.text === 'string' ? $json.output.text :   'Hello,\\n\\nThank you for your email. We have received your message and will get back to you shortly.\\n\\nBest regards,\\nSupport Team' }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        176,
+        0
+      ],
+      "id": "308b5211-b0c3-4797-94d2-f2612c480ae9",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Email Trigger (IMAP)": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "fbf3918d-6970-4ad6-8608-ef61029035cb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ba0e904fb13498d522f135088b37003a30e0a038b60872ba858266502044aafd"
+  },
+  "nodeGroups": [],
+  "id": "wct0KvHrGOcwe2SR",
+  "tags": []
+}
